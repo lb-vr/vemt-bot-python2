@@ -1,0 +1,17 @@
+{
+    "categories": {
+        "bot": "bot",
+        "contact": "コンタクト"
+    },
+    "channels": {
+        "bot_control": "コントロール",
+        "entry": "エントリー窓口",
+        "status": "ステータス",
+        "query": "問い合わせ"
+    },
+    "roles": {
+        "bot_admin": "BOT管理者",
+        "exhibitor": "出展者",
+        "manager": "運営"
+    }
+}
