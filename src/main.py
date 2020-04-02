@@ -34,17 +34,18 @@ if __name__ == '__main__':
         discord_logger = logging.getLogger(logger_name)
         discord_logger.setLevel(logging.WARNING)
 
-    # load config
     try:
+        # load config
         server_config.loadConfig()
-    except Exception as e:
-        logger.critical("Failed to load config. " + str(e))
-        exit(1)
 
-    # setup processor
-    modules = bot_loader.loadBotProcessors()
-    for module in modules:
-        client.VemtClient.addProcessor(module, args.dev)
+        # setup processor
+        modules = bot_loader.loadBotProcessors()
+        for module in modules:
+            client.VemtClient.addProcessor(module, args.dev)
+
+    except Exception as e:
+        logger.critical(f"<{str(type(e))}> {str(e)}")
+        exit(1)
 
     # load token
     token_str: str = ""

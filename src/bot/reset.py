@@ -1,20 +1,14 @@
 import discord
 import argparse
 
-from typing import NoReturn, List, Tuple, Optional
+from typing import List
 
-# from bot.const import Definitions
 import config
 import exception
-
-# from bot.processor_base import ProcessorBase, ProcessorError, AuthenticationError, ForbiddenChannelError
-
-# from db.user.entries import Entries
-# from db.database import Database
-# from db.utility import getDBFilepath
+from db.api import entries
 
 
-def setup(cls, subparser: argparse._SubParsersAction, dev: bool = True):
+def setup(subparser: argparse._SubParsersAction, dev: bool = True):
     if dev:
         parser = subparser.add_parser("+reset", help="【BOT開発専用】Discordサーバーをもとの状態に戻します", add_help=False)
         return parser
@@ -53,17 +47,20 @@ async def run(args, client, message: discord.Message):
                 await ch.delete()
 
     # コンタクトチャンネル
-    with Database(getDBFilepath(message.guild.id)) as db:
-        def_contact_channels: List[str] = \
-            [item["contact_channel_id"] for item in db.select("entries", columns=["contact_channel_id"])]
-        for ch in current_channels:
-            for dc in def_contact_channels:
-                if ch.name == dc:
-                    await ch.delete()
+    entries_list = entries.getAllEntries(guild.id)
+    for ch in current_channels:
+        for entry in entries_list:
+            if ch.id == entry.contactChannelId:
+                await ch.delete()
 
     # 作成済みのロールを削除
     current_roles: List[discord.Role] = guild.roles
-    def_roles: Tuple[str] = RoleName.getAll()
+    def_roles: List[str] = [
+        config.getConfig().roleName.botAdmin,
+        config.getConfig().roleName.exhibitor,
+        config.getConfig().roleName.manager
+    ]
+
     for rl in current_roles:
         for drl in def_roles:
             if rl.name == drl:

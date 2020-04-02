@@ -8,6 +8,11 @@ class DatabaseError(Exception):
     pass
 
 
+def toDBFilepath(guild_id: int) -> str:
+    assert type(guild_id)
+    return "db_" + str(guild_id) + ".db"
+
+
 class Database:
 
     def __init__(self, database: str, isolation_level: Optional[str] = None):

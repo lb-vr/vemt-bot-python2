@@ -1,5 +1,6 @@
 import datetime
-from typing import Optional
+from typing import Optional, List
+from db.database import Database, toDBFilepath
 
 
 class Entry:
@@ -28,4 +29,6 @@ class Entry:
         raise NotImplementedError("時刻のフォーマットが分からん" + str(self.__data["updated_at"]))
 
 
-def getAllEntries(guild_id: int):
+def getAllEntries(guild_id: int) -> List[Entry]:
+    with Database(toDBFilepath(guild_id)) as db:
+        return [Entry(result) for result in db.select("entries")]
