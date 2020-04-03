@@ -11,6 +11,7 @@
     },
     "roles": {
         "bot_admin": "BOT管理者",
+        "pre_exhibitor": "仮エントリー済み",
         "exhibitor": "出展者",
         "manager": "運営"
     }

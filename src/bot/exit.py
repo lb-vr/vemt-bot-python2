@@ -14,7 +14,7 @@ def setup(subparser: argparse._SubParsersAction, dev=False):
 
 async def authenticate(args, client: discord.Client, message: discord.Message):
     if not message.guild:
-        raise exception.InvalidChannelError("+exitコマンドはサーバのオーナのみが発行可能です")
+        raise exception.InvalidChannelError("+exitコマンドはサーバでのみ発行可能です")
 
     if message.guild.owner.id != message.author.id:
         raise exception.PermissionDeniedError("+exitコマンドはサーバーのオーナーのみが発行可能です")

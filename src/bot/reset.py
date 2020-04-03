@@ -47,7 +47,7 @@ async def run(args, client, message: discord.Message):
                 await ch.delete()
 
     # コンタクトチャンネル
-    entries_list = entries.getAllEntries(guild.id)
+    entries_list = entries.getAll(guild.id)
     for ch in current_channels:
         for entry in entries_list:
             if ch.id == entry.contactChannelId:
@@ -57,6 +57,7 @@ async def run(args, client, message: discord.Message):
     current_roles: List[discord.Role] = guild.roles
     def_roles: List[str] = [
         config.getConfig().roleName.botAdmin,
+        config.getConfig().roleName.preExhibitor,
         config.getConfig().roleName.exhibitor,
         config.getConfig().roleName.manager
     ]

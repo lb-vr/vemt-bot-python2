@@ -1,6 +1,10 @@
+from db.api import registry
+import asyncio
 import discord
 import logging
 import shlex
+
+import datetime
 
 import exception
 import bot_loader
@@ -34,10 +38,6 @@ class VemtClient(discord.Client):
     def __init__(self, args, loop=None, **options):
         super().__init__(loop=loop, **options)
         self.__system_args = args
-
-    async def on_ready(self):
-        logger = logging.getLogger()
-        logger.info('Logged on as {0}!'.format(self.user))
 
     async def on_message(self, message: discord.Message):
         logger = logging.getLogger()
@@ -82,3 +82,19 @@ class VemtClient(discord.Client):
 
             except exception.VemtCommandError as e:
                 await message.channel.send(":x: **失敗** " + str(e))
+
+    async def on_ready(self):
+        logger = logging.getLogger()
+        logger.info('Logged on as {0}!'.format(self.user))
+
+        """
+        ids = registry.getGuildIds(627563965089579017)
+        guild: discord.Guild = self.get_guild(627563965089579017)
+        channel: discord.TextChannel = guild.get_channel(ids.channelStatus)
+        count = 0
+        while True:
+            logger.info("TIMER START")
+            await asyncio.sleep(5)
+            await channel.send(f"タイマー！！ {count * 5}s")
+            logger.info("TIMER!!!")
+            """

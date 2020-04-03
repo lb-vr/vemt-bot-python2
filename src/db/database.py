@@ -136,14 +136,46 @@ class Database:
         assert type(condition) is dict
         assert table != ""
 
-        sql: List[str] = ["SELECT"] + columns + ["FROM", table]
+        sql: List[str] = ["SELECT"] + [", ".join(columns)] + ["FROM", table]
         bindee: Optional[List[Any]] = None
 
         if condition:
             bindee = []
             sql.append("WHERE")
             for cond_k, cond_v in condition.items():
-                sql.append("`{}`=?".format(cond_k))
+                sql.append("{}=?".format(cond_k))
+                bindee.append(cond_v)
+                sql.append("AND")
+            sql.pop()  # 一番最後のANDを削除
+
+        return self.__execute(" ".join(sql), bindee)
+
+    def search(self, table: str, columns: List[str] = ["*"], condition: Dict[str, Any] = {}) -> list:
+        """ データベースからデータを検索する基礎関数
+
+        Args:
+            table(str): テーブル名
+            columns(List[str]): 取得したいカラム名
+            condition(Dict[str, Any]): 検索条件
+
+        Exceptions:
+            sqlite3.Error: データベースオペレーションでエラーがあった場合
+
+        Returns:
+            list: 取得結果が格納されたリスト
+        """
+        assert type(table) is str, table
+        assert type(condition) is dict
+        assert table != ""
+
+        sql: List[str] = ["SELECT"] + [", ".join(columns)] + ["FROM", table]
+        bindee: Optional[List[Any]] = None
+
+        if condition:
+            bindee = []
+            sql.append("WHERE")
+            for cond_k, cond_v in condition.items():
+                sql.append("{} like ?".format(cond_k))
                 bindee.append(cond_v)
                 sql.append("AND")
             sql.pop()  # 一番最後のANDを削除

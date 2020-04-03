@@ -29,6 +29,24 @@ class Entry:
         raise NotImplementedError("時刻のフォーマットが分からん" + str(self.__data["updated_at"]))
 
 
-def getAllEntries(guild_id: int) -> List[Entry]:
-    with Database(toDBFilepath(guild_id)) as db:
+def getAll(guild_id: int) -> List[Entry]:
+    with Database(toDBFilepath(guild_id=guild_id)) as db:
         return [Entry(result) for result in db.select("entries")]
+
+
+def getFromDiscordId(guild_id: int, discord_user_id: int) -> List[Entry]:
+    with Database(toDBFilepath(guild_id=guild_id)) as db:
+        return [Entry(result)
+                for result in db.select(
+                    table="entries",
+                    condition={"discord_user_id": discord_user_id})]
+
+
+def entry(guild_id: int, discord_user_id: int, channel_id: int) -> Entry:
+    with Database(toDBFilepath(guild_id=guild_id), isolation_level="EXCLUSIVE") as db:
+        db.insert(table="entries",
+                  candidate={"discord_user_id": discord_user_id,
+                             "contact_channel_id": channel_id})
+        db.commit()
+
+        return getFromDiscordId(guild_id, discord_user_id)[0]

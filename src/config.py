@@ -56,11 +56,16 @@ class RoleName:
     def __init__(self, **args):
         self.__bot_admin = ConfigTypeError.checkAndGet(args, "bot_admin", "BOT-Admin")
         self.__exhibitor = ConfigTypeError.checkAndGet(args, "exhibitor", "Exhibitor")
+        self.__pre_exhibitor = ConfigTypeError.checkAndGet(args, "pre_exhibitor", "PRE-Entried")
         self.__manager = ConfigTypeError.checkAndGet(args, "manager", "Manager")
 
     @property
     def botAdmin(self) -> str:
         return self.__bot_admin
+
+    @property
+    def preExhibitor(self) -> str:
+        return self.__pre_exhibitor
 
     @property
     def exhibitor(self) -> str:
